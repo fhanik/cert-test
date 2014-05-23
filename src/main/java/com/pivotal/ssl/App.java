@@ -1,17 +1,16 @@
 package com.pivotal.ssl;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.security.KeyFactory;
 import java.security.KeyStore;
-import java.security.PublicKey;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Enumeration;
 
 /**
@@ -47,13 +46,20 @@ public class App {
 
 
     public static boolean verifyStoreCerts(String name, File file, X509Certificate cert) throws Exception {
+        TrustManagerFactory tmf = TrustManagerFactory
+            .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+
         InputStream is = new FileInputStream(file);
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         String password = "changeit";
         keystore.load(is, password.toCharArray());
 
+        tmf.init(keystore);
+
+
         Enumeration enumeration = keystore.aliases();
-        boolean validated = false;
+        boolean keyvalidated = false;
+        boolean servertrusted = false;
         while(enumeration.hasMoreElements()) {
             String alias = (String)enumeration.nextElement();
             //System.out.println("alias name: " + alias);
@@ -61,15 +67,28 @@ public class App {
             //System.out.println(certificate.toString());
             try {
                 cert.verify(certificate.getPublicKey());
-                validated = true;
+                keyvalidated = true;
                 System.out.println("VERIFIED["+name+"] with alias:"+alias);
                 break;
             } catch (Exception x) {
                 //System.err.println("Not verified[\"+name+\"] with alias:"+alias+" \n"+x.getMessage());
             }
         }
-        return validated;
+
+        for (TrustManager tm : tmf.getTrustManagers()) {
+            X509TrustManager xtm = (X509TrustManager)tm;
+            try {
+                xtm.checkServerTrusted(new X509Certificate[] {cert}, "RSA");
+                servertrusted = true;
+                System.out.println("VERIFIED["+name+"] is a trusted cert in keystore:"+ file.getName());
+            } catch (CertificateException e) {
+
+            }
+        }
+        return keyvalidated & servertrusted;
     }
+
+
 
 
 }
