@@ -24,7 +24,7 @@ public class App {
         X509Certificate caCert = (X509Certificate)cf.generateCertificate(App.class.getResourceAsStream("/DigiCertCA.crt"));
         X509Certificate self = (X509Certificate)cf.generateCertificate(App.class.getResourceAsStream("/self/server.crt"));
 
-        X509Certificate startProdDmz = (X509Certificate)cf.generateCertificate(App.class.getResourceAsStream("/star_proddmz_cf_corelogic_net.crt"));
+        X509Certificate starProdDmzCert = (X509Certificate)cf.generateCertificate(App.class.getResourceAsStream("/star_proddmz_cf_corelogic_net.crt"));
 
         //yes, we can validate
         cert.verify(caCert.getPublicKey());
@@ -47,15 +47,15 @@ public class App {
 
         //normal cacerts
         file = new File("src/main/resources/cacerts");
-        verifyStoreCerts("starProdDmzCertOnDefaultCACERTS", file, startProdDmz);
+        verifyStoreCerts("starProdDmzCertOnDefaultCACERTS", file, starProdDmzCert);
 
         //digicertCA imported
         file = new File("src/main/resources/cacerts_and_digicert");
-        verifyStoreCerts("starProdDmzCertWithCAImported", file, startProdDmz);
+        verifyStoreCerts("starProdDmzCertWithCAImported", file, starProdDmzCert);
 
         //the cert itself import
         file = new File("src/main/resources/cacerts_and_star_proddmz");
-        verifyStoreCerts("starProdDmzCertWithCertImported", file, startProdDmz);
+        verifyStoreCerts("starProdDmzCertWithCertImported", file, starProdDmzCert);
 
 
     }
