@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -19,6 +20,9 @@ import java.util.Enumeration;
  */
 public class App {
     public static void main( String[] args ) throws Exception {
+//        Security.setProperty("ocsp.enable", "true");
+//        System.setProperty("com.sun.security.enableCRLDP", "true");
+
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         X509Certificate cert = (X509Certificate)cf.generateCertificate(App.class.getResourceAsStream("/cert.pem"));
         X509Certificate caCert = (X509Certificate)cf.generateCertificate(App.class.getResourceAsStream("/DigiCertCA.crt"));
@@ -84,7 +88,7 @@ public class App {
             try {
                 cert.verify(certificate.getPublicKey());
                 keyvalidated = true;
-                System.out.println("VERIFIED["+name+"] against public key with alias:"+alias);
+                System.out.println("VERIFIED["+name+"] against public key in file:"+keystoreFile.getName()+" with alias:"+alias);
                 break;
             } catch (Exception x) {
                 //System.err.println("Not verified[\"+name+\"] with alias:"+alias+" \n"+x.getMessage());
