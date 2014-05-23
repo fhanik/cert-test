@@ -30,42 +30,42 @@ public class App {
         cert.verify(caCert.getPublicKey());
 
         //normal cacerts
-        File file = new File("src/main/resources/cacerts");
-        verifyStoreCerts("digiSignedCertOnDefaultCACERTS", file, cert);
+        File keystoreFile = new File("src/main/resources/cacerts");
+        verifyStoreCerts("digiSignedCertOnDefaultCACERTS", keystoreFile, cert);
 
         //digicertCA imported
-        file = new File("src/main/resources/cacerts_and_digicert");
-        verifyStoreCerts("digiSignedCertWithCAImported", file, cert);
+        keystoreFile = new File("src/main/resources/cacerts_and_digicert");
+        verifyStoreCerts("digiSignedCertWithCAImported", keystoreFile, cert);
 
         //the cert itself import
-        file = new File("src/main/resources/cacerts_and_cert_installed");
-        verifyStoreCerts("digiSignedCertWithCertImported", file, cert);
+        keystoreFile = new File("src/main/resources/cacerts_and_cert_installed");
+        verifyStoreCerts("digiSignedCertWithCertImported", keystoreFile, cert);
 
         //the self signed itself import
-        file = new File("src/main/resources/cacerts_and_self_signed");
-        verifyStoreCerts("SelfSignedCertWithCertImported", file, self);
+        keystoreFile = new File("src/main/resources/cacerts_and_self_signed");
+        verifyStoreCerts("SelfSignedCertWithCertImported", keystoreFile, self);
 
         //normal cacerts
-        file = new File("src/main/resources/cacerts");
-        verifyStoreCerts("starProdDmzCertOnDefaultCACERTS", file, starProdDmzCert);
+        keystoreFile = new File("src/main/resources/cacerts");
+        verifyStoreCerts("starProdDmzCertOnDefaultCACERTS", keystoreFile, starProdDmzCert);
 
         //digicertCA imported
-        file = new File("src/main/resources/cacerts_and_digicert");
-        verifyStoreCerts("starProdDmzCertWithCAImported", file, starProdDmzCert);
+        keystoreFile = new File("src/main/resources/cacerts_and_digicert");
+        verifyStoreCerts("starProdDmzCertWithCAImported", keystoreFile, starProdDmzCert);
 
         //the cert itself import
-        file = new File("src/main/resources/cacerts_and_star_proddmz");
-        verifyStoreCerts("starProdDmzCertWithCertImported", file, starProdDmzCert);
+        keystoreFile = new File("src/main/resources/cacerts_and_star_proddmz");
+        verifyStoreCerts("starProdDmzCertWithCertImported", keystoreFile, starProdDmzCert);
 
 
     }
 
 
-    public static boolean verifyStoreCerts(String name, File file, X509Certificate cert) throws Exception {
+    public static boolean verifyStoreCerts(String name, File keystoreFile, X509Certificate cert) throws Exception {
         TrustManagerFactory tmf = TrustManagerFactory
             .getInstance(TrustManagerFactory.getDefaultAlgorithm());
 
-        InputStream is = new FileInputStream(file);
+        InputStream is = new FileInputStream(keystoreFile);
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         String password = "changeit";
         keystore.load(is, password.toCharArray());
@@ -96,7 +96,7 @@ public class App {
             try {
                 xtm.checkServerTrusted(new X509Certificate[] {cert}, "RSA");
                 servertrusted = true;
-                System.out.println("VERIFIED["+name+"] is a trusted cert in keystore:"+ file.getName());
+                System.out.println("VERIFIED[" + name + "] is a trusted cert in keystore:" + keystoreFile.getName());
             } catch (CertificateException e) {
 
             }
