@@ -31,31 +31,31 @@ public class App {
 
         //normal cacerts
         File keystoreFile = new File("src/main/resources/cacerts");
-        verifyStoreCerts("digiSignedCertOnDefaultCACERTS", keystoreFile, cert);
+        verifyStoreCerts("cert.pem", keystoreFile, cert);
 
         //digicertCA imported
         keystoreFile = new File("src/main/resources/cacerts_and_digicert");
-        verifyStoreCerts("digiSignedCertWithCAImported", keystoreFile, cert);
+        verifyStoreCerts("cert.pem", keystoreFile, cert);
 
         //the cert itself import
         keystoreFile = new File("src/main/resources/cacerts_and_cert_installed");
-        verifyStoreCerts("digiSignedCertWithCertImported", keystoreFile, cert);
+        verifyStoreCerts("cert.pem", keystoreFile, cert);
 
         //the self signed itself import
         keystoreFile = new File("src/main/resources/cacerts_and_self_signed");
-        verifyStoreCerts("SelfSignedCertWithCertImported", keystoreFile, self);
+        verifyStoreCerts("self signed server.crt", keystoreFile, self);
 
         //normal cacerts
         keystoreFile = new File("src/main/resources/cacerts");
-        verifyStoreCerts("starProdDmzCertOnDefaultCACERTS", keystoreFile, starProdDmzCert);
+        verifyStoreCerts("star_proddmz_cf_corelogic_net.crt", keystoreFile, starProdDmzCert);
 
         //digicertCA imported
         keystoreFile = new File("src/main/resources/cacerts_and_digicert");
-        verifyStoreCerts("starProdDmzCertWithCAImported", keystoreFile, starProdDmzCert);
+        verifyStoreCerts("star_proddmz_cf_corelogic_net.crt", keystoreFile, starProdDmzCert);
 
         //the cert itself import
         keystoreFile = new File("src/main/resources/cacerts_and_star_proddmz");
-        verifyStoreCerts("starProdDmzCertWithCertImported", keystoreFile, starProdDmzCert);
+        verifyStoreCerts("star_proddmz_cf_corelogic_net.crt", keystoreFile, starProdDmzCert);
 
 
     }
@@ -84,7 +84,7 @@ public class App {
             try {
                 cert.verify(certificate.getPublicKey());
                 keyvalidated = true;
-                System.out.println("VERIFIED["+name+"] with alias:"+alias);
+                System.out.println("VERIFIED["+name+"] against public key with alias:"+alias);
                 break;
             } catch (Exception x) {
                 //System.err.println("Not verified[\"+name+\"] with alias:"+alias+" \n"+x.getMessage());
